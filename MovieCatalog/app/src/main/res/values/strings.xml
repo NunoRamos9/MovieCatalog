@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">MovieCatalog</string>
+    <string name="Poster_Path">https://image.tmdb.org/t/p/w342/</string>
+
+    <string-array name="sort_options_array">
+        <item>Popular</item>
+        <item>Top Rated</item>
+        <item>Favorite</item>
+    </string-array>
 </resources>

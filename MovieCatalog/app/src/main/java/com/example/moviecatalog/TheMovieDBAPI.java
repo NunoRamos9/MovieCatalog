@@ -4,12 +4,14 @@ import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
+import retrofit2.http.Path;
+import retrofit2.http.Query;
 
 public interface TheMovieDBAPI {
 
-    @GET("movie/top_rated?api_key=4adcbbe309891a2823d0011a2eb8015b")
-    Call<List<Movie>> getMoviesTopRated();
+    @GET("movie/{sort_by}")
+    Call<MovieList> getMovieList(@Path("sort_by") String sortKey, @Query("api_key") String apiKey);
 
-    @GET("movie/popular?api_key=4adcbbe309891a2823d0011a2eb8015b")
-    Call<List<Movie>> getMoviesPopular();
+    @GET("movie/{sort_by}")
+    Call<List<Movie>> getMovies(@Path("sort_by") String sortKey, @Query("api_key") String apiKey);
 }

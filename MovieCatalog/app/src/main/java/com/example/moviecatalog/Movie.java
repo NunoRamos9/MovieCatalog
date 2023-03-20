@@ -1,20 +1,30 @@
 package com.example.moviecatalog;
 
-public class Movie {
+import com.google.gson.annotations.SerializedName;
 
-    private int id;
+import java.io.Serializable;
 
+public class Movie implements Serializable {
+
+    @SerializedName("id")
+    private String id;
+
+    @SerializedName("overview")
     private String overview;
 
-    private String poster_path;
+    @SerializedName("poster_path")
+    private String posterPath;
 
-    private String release_date;
+    @SerializedName("release_date")
+    private String releaseDate;
 
+    @SerializedName("title")
     private String title;
 
-    private double vote_average;
+    @SerializedName("vote_average")
+    private double voteAverage;
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
@@ -22,19 +32,19 @@ public class Movie {
         return overview;
     }
 
-    public String getPoster_path() {
-        return poster_path;
+    public String getPosterPath() {
+        return posterPath;
     }
 
-    public String getRelease_date() {
-        return release_date;
+    public String getReleaseDate() {
+        return releaseDate;
     }
 
     public String getTitle() {
         return title;
     }
 
-    public double getVote_average() {
-        return vote_average;
+    public double getVoteAverage() {
+        return voteAverage;
     }
 }

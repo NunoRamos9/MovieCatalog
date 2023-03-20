@@ -18,6 +18,7 @@ public class PosterItemAdapter extends RecyclerView.Adapter<PosterItemAdapter.Po
 
     private final LinkedList<String> mPosterList;
     private LayoutInflater mInflater;
+    MovieList data;
 
     public PosterItemAdapter(Context context,LinkedList<String> posterList) {
         mInflater = LayoutInflater.from(context);
@@ -42,6 +43,15 @@ public class PosterItemAdapter extends RecyclerView.Adapter<PosterItemAdapter.Po
     @Override
     public int getItemCount() {
         return mPosterList.size();
+    }
+
+    public void setData (MovieList data) {
+        this.data = data;
+        //notifyDataSetChanged();
+    }
+
+    public MovieList getData () {
+        return this.data;
     }
 
     class PosterViewHolder extends RecyclerView.ViewHolder {
