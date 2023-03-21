@@ -11,7 +11,4 @@ public interface TheMovieDBAPI {
 
     @GET("movie/{sort_by}")
     Call<MovieList> getMovieList(@Path("sort_by") String sortKey, @Query("api_key") String apiKey);
-
-    @GET("movie/{sort_by}")
-    Call<List<Movie>> getMovies(@Path("sort_by") String sortKey, @Query("api_key") String apiKey);
 }

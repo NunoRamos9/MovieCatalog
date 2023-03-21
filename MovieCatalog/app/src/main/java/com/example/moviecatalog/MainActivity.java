@@ -1,5 +1,6 @@
 package com.example.moviecatalog;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -26,6 +27,16 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
     private static final String LOG_TAG = MainActivity.class.getSimpleName();
+    public static final String POSTER_MESSAGE =
+            "https://image.tmdb.org/t/p/w342/x3PIk93PTbxT88ohfeb26L1VpZw.jpg";
+    public static final String TITLE_MESSAGE =
+            "Prizefighter: The Life of Jem Belcher";
+    public static final String RELEASE_DATE_MESSAGE =
+            "2022-06-30";
+    public static final String RATING_MESSAGE =
+            "7.2";
+    public static final String DESCRIPTION_MESSAGE =
+            "At the turn of the 19th century, Pugilism was the sport of kings and a gifted young boxer fought his way to becoming champion of England.";
     private RecyclerView mRecyclerView;
     private PosterItemAdapter mAdapter;
 
@@ -137,6 +148,18 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     @Override
     public void onNothingSelected(AdapterView<?> adapterView) {
+        //Do nothing
+    }
 
+    public void showDetails(View view) {
+        Intent intent = new Intent(this, SecondActivity.class);
+        intent.putExtra(POSTER_MESSAGE, POSTER_MESSAGE);
+        intent.putExtra(TITLE_MESSAGE, TITLE_MESSAGE);
+        intent.putExtra(RELEASE_DATE_MESSAGE, RELEASE_DATE_MESSAGE);
+        intent.putExtra(RATING_MESSAGE, RATING_MESSAGE);
+        intent.putExtra(DESCRIPTION_MESSAGE, DESCRIPTION_MESSAGE);
+        startActivity(intent);
+
+        Toast.makeText(this, "Clicked!", Toast.LENGTH_SHORT).show();
     }
 }
