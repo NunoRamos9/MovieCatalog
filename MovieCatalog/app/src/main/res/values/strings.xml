@@ -1,6 +1,9 @@
 <resources>
     <string name="app_name">MovieCatalog</string>
     <string name="Poster_Path">https://image.tmdb.org/t/p/w342/</string>
+    <string name="favorite_button">Favorite</string>
+    <string name="trailer_1_button">Trailer 1</string>
+    <string name="trailer_2_button">Trailer 2</string>
 
     <string-array name="sort_options_array">
         <item>Popular</item>
