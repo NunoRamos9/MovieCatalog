@@ -23,7 +23,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
+public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener, PosterItemAdapter.OnClickItemListener {
 
     private static final String LOG_TAG = MainActivity.class.getSimpleName();
     private RecyclerView mRecyclerView;
@@ -53,14 +53,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         mRecyclerView.clearOnScrollListeners();
         mAdapter = new PosterItemAdapter(this);
-        mAdapter.setOnClickListener(new PosterItemAdapter.OnClickItemListener() {
-            @Override
-            public void onClickItem(Movie movie, int position) {
-                Intent intent = new Intent(MainActivity.this, SecondActivity.class);
-                intent.putExtra("movie", movie);
-                startActivity(intent);
-            }
-        });
+        mAdapter.setOnClickListener(this);
         mRecyclerView.setAdapter(mAdapter);
         GridLayoutManager gridLayoutManager = new GridLayoutManager(MainActivity.this, 2);
         mRecyclerView.setLayoutManager(gridLayoutManager);
@@ -130,10 +123,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     public void launchMovieCatalog(String sortKey) {
-        if (internet_connection()){
+        if (internet_connection()) {
             // Execute DownloadJSON AsyncTask
             getMovies(sortKey);
-        }else{
+        } else {
             //create a snackbar telling the user there is no internet connection and issuing a chance to reconnect
             final Snackbar snackbar = Snackbar.make(findViewById(android.R.id.content),
                     "No internet connection.",
@@ -147,5 +140,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 }
             }).show();
         }
+    }
+
+    @Override
+    public void onClickItem(Movie movie, int position) {
+        Intent intent = new Intent(MainActivity.this, SecondActivity.class);
+        intent.putExtra("movie", movie);
+        startActivity(intent);
     }
 }

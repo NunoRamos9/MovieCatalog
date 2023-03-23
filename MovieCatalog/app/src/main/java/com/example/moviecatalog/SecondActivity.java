@@ -2,7 +2,9 @@ package com.example.moviecatalog;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
@@ -11,6 +13,8 @@ import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 
 public class SecondActivity extends AppCompatActivity {
+
+    private String id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,21 +37,25 @@ public class SecondActivity extends AppCompatActivity {
         date.setText(movie.getReleaseDate());
         rating.setText(movie.getVoteAverage());
         description.setText(movie.getOverview());
+        id = movie.getId();
     }
 
     public void addFavorite(View view) {
     }
 
     public void playTrailer1(View view) {
+
+        //Falta fazer pedido à api para receber o id do trailer
         /*
         Intent appIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube:" + id));
         Intent webIntent = new Intent(Intent.ACTION_VIEW,
                     Uri.parse("http://www.youtube.com/watch?v=" + id));
         try {
-            context.startActivity(appIntent);
+            startActivity(appIntent);
         } catch (ActivityNotFoundException ex) {
-            context.startActivity(webIntent);
+            startActivity(webIntent);
         }
+
          */
     }
 
