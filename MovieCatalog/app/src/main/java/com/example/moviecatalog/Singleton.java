@@ -9,7 +9,7 @@ public class Singleton {
 
     private static Singleton _instance;
 
-    private TheMovieDBAPI theMovieDBAPI;
+    private final TheMovieDBAPI theMovieDBAPI;
 
     private Singleton() {
         //Instantiation of the HttpClient
@@ -40,9 +40,5 @@ public class Singleton {
 
     public TheMovieDBAPI getTheMovieDBAPI() {
         return theMovieDBAPI;
-    }
-
-    public void setTheMovieDBAPI(TheMovieDBAPI theMovieDBAPI) {
-        this.theMovieDBAPI = theMovieDBAPI;
     }
 }

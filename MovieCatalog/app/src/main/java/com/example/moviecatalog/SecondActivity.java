@@ -1,20 +1,22 @@
 package com.example.moviecatalog;
 
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.content.ActivityNotFoundException;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.squareup.picasso.Picasso;
 
 public class SecondActivity extends AppCompatActivity {
 
-    private String id;
+    private String id1;
+    private String id2;
+    private String movieId;
+
+    private PosterItemAdapter mAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,19 +39,23 @@ public class SecondActivity extends AppCompatActivity {
         date.setText(movie.getReleaseDate());
         rating.setText(movie.getVoteAverage());
         description.setText(movie.getOverview());
-        id = movie.getId();
+        movieId = movie.getId();
+
+        //pedido à api do trailer com o movieId
     }
 
     public void addFavorite(View view) {
+        mAdapter.addMovieID(movieId);
     }
 
     public void playTrailer1(View view) {
 
         //Falta fazer pedido à api para receber o id do trailer
+
         /*
-        Intent appIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube:" + id));
+        Intent appIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube:" + id1));
         Intent webIntent = new Intent(Intent.ACTION_VIEW,
-                    Uri.parse("http://www.youtube.com/watch?v=" + id));
+                    Uri.parse("http://www.youtube.com/watch?v=" + id1));
         try {
             startActivity(appIntent);
         } catch (ActivityNotFoundException ex) {
@@ -60,6 +66,19 @@ public class SecondActivity extends AppCompatActivity {
     }
 
     public void playTrailer2(View view) {
-        //Same as trailer 1
+
+        //Falta fazer pedido à api para receber o id do trailer
+
+        /*
+        Intent appIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube:" + id2));
+        Intent webIntent = new Intent(Intent.ACTION_VIEW,
+                Uri.parse("http://www.youtube.com/watch?v=" + id2));
+        try {
+            startActivity(appIntent);
+        } catch (ActivityNotFoundException ex) {
+            startActivity(webIntent);
+        }
+
+         */
     }
 }

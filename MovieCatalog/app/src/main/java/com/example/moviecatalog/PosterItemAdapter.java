@@ -12,11 +12,14 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.squareup.picasso.Picasso;
 
+import java.util.LinkedList;
+
 public class PosterItemAdapter extends RecyclerView.Adapter<PosterItemAdapter.PosterViewHolder> {
 
     private final LayoutInflater mInflater;
     private MovieList data;
     private OnClickItemListener listener;
+    private LinkedList<String> movieIds;
 
     public PosterItemAdapter(Context context) {
         mInflater = LayoutInflater.from(context);
@@ -63,6 +66,18 @@ public class PosterItemAdapter extends RecyclerView.Adapter<PosterItemAdapter.Po
     public void setData(MovieList data) {
         this.data = data;
         notifyDataSetChanged();
+    }
+
+    public void addMovieID(String id) {
+        if (movieIds.contains(id)) {
+            movieIds.remove(id);
+        } else {
+            this.movieIds.add(id);
+        }
+    }
+
+    public LinkedList<String> getMovieIds() {
+        return this.movieIds;
     }
 
     public void setOnClickListener(OnClickItemListener listener) {

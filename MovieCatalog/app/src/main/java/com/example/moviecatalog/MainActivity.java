@@ -26,7 +26,6 @@ import retrofit2.Response;
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener, PosterItemAdapter.OnClickItemListener {
 
     private static final String LOG_TAG = MainActivity.class.getSimpleName();
-    private RecyclerView mRecyclerView;
     private PosterItemAdapter mAdapter;
 
     @Override
@@ -34,12 +33,14 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mRecyclerView = findViewById(R.id.recyclerView);
+        RecyclerView mRecyclerView = findViewById(R.id.recyclerView);
         Spinner spinner = findViewById(R.id.filterSpinner);
 
         if (spinner != null) {
             spinner.setOnItemSelectedListener(this);
         }
+
+        //Added options to the spinner
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
                 R.array.sort_options_array, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -49,8 +50,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             spinner.setAdapter(adapter);
         }
 
-        //Method to the movie database api
-
+        //Adapter initialization
         mRecyclerView.clearOnScrollListeners();
         mAdapter = new PosterItemAdapter(this);
         mAdapter.setOnClickListener(this);
@@ -76,8 +76,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 }
 
                 mAdapter.setData(response.body());
-
-                Toast.makeText(MainActivity.this, "Success", Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -94,16 +92,51 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         Log.d(LOG_TAG, spinnerLabel);
 
-        switch (spinnerLabel) {
-            case "Popular":
-                sortingKey = "popular";
-                launchMovieCatalog(sortingKey);
-            case "Top Rated":
-                sortingKey = "top_rated";
-                launchMovieCatalog(sortingKey);
-            case "Favorite":
-                //Show list of favorite movies
+        //Gets the selected item on the spinner and calls the correct method
+        if (adapterView.getSelectedItemPosition() == 0) {
+            sortingKey = "popular";
+            launchMovieCatalog(sortingKey);
+        } else if (adapterView.getSelectedItemPosition() == 1) {
+            sortingKey = "top_rated";
+            launchMovieCatalog(sortingKey);
+        } else if (adapterView.getSelectedItemPosition() == 2) {
+            loadFavoriteMovies();
         }
+    }
+
+    private void loadFavoriteMovies() {
+        Toast.makeText(this, "To be implemented", Toast.LENGTH_SHORT).show();
+        /*
+
+        Singleton singleton = Singleton.getInstance();
+        TheMovieDBAPI theMovieDBAPI = singleton.getTheMovieDBAPI();
+
+        LinkedList<String> movieID = mAdapter.getMovieIds();
+        for (String id : movieID) {
+            Call<Movie> call = theMovieDBAPI.getMovie(id, "4adcbbe309891a2823d0011a2eb8015b");
+
+            call.enqueue(new Callback<Movie>() {
+                @Override
+                public void onResponse(Call<Movie> call, Response<Movie> response) {
+
+                    if (!response.isSuccessful()) {
+                        Toast.makeText(MainActivity.this, response.code(), Toast.LENGTH_SHORT).show();
+                    }
+
+                    List<Movie> movie = new LinkedList<>();
+                    movie.add(response.body());
+
+                    mAdapter.setData(movie);
+                }
+
+                @Override
+                public void onFailure(Call<Movie> call, Throwable t) {
+                    Toast.makeText(MainActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+
+         */
     }
 
     @Override
@@ -117,9 +150,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
 
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-        boolean isConnected = activeNetwork != null &&
-                activeNetwork.isConnectedOrConnecting();
-        return isConnected;
+        return (activeNetwork != null &&
+                activeNetwork.isConnectedOrConnecting());
     }
 
     public void launchMovieCatalog(String sortKey) {
