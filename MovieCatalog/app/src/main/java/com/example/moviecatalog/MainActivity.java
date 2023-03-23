@@ -12,10 +12,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
@@ -27,16 +23,6 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
     private static final String LOG_TAG = MainActivity.class.getSimpleName();
-    public static final String POSTER_MESSAGE =
-            "https://image.tmdb.org/t/p/w342/x3PIk93PTbxT88ohfeb26L1VpZw.jpg";
-    public static final String TITLE_MESSAGE =
-            "Prizefighter: The Life of Jem Belcher";
-    public static final String RELEASE_DATE_MESSAGE =
-            "2022-06-30";
-    public static final String RATING_MESSAGE =
-            "7.2";
-    public static final String DESCRIPTION_MESSAGE =
-            "At the turn of the 19th century, Pugilism was the sport of kings and a gifted young boxer fought his way to becoming champion of England.";
     private RecyclerView mRecyclerView;
     private PosterItemAdapter mAdapter;
 
@@ -54,10 +40,31 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
                 R.array.sort_options_array, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
         // Apply the adapter to the spinner.
         if (spinner != null) {
             spinner.setAdapter(adapter);
         }
+
+        //Method to the movie database api
+
+        mRecyclerView.clearOnScrollListeners();
+        mAdapter = new PosterItemAdapter(this);
+        mAdapter.setOnClickListener(new PosterItemAdapter.OnClickItemListener() {
+            @Override
+            public void onClickItem(Movie movie, int position) {
+                Intent intent = new Intent(MainActivity.this, SecondActivity.class);
+                intent.putExtra("movie", movie);
+                startActivity(intent);
+            }
+        });
+        mRecyclerView.setAdapter(mAdapter);
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(MainActivity.this, 2);
+        mRecyclerView.setLayoutManager(gridLayoutManager);
+
+    }
+
+    public void getMovies(String sortKey) {
 
         //Instantiation of the HttpClient
         OkHttpClient.Builder okHttpClientBuilder = new OkHttpClient.Builder();
@@ -77,22 +84,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         TheMovieDBAPI theMovieDBAPI = retrofit.create(TheMovieDBAPI.class);
 
-        //Method to the movie database api
-        getMovies(theMovieDBAPI, "popular");
-
-        //MovieList movie = mAdapter.getData();
-
-        //mRecyclerView.setLayoutManager();
-        //mAdapter = new PosterItemAdapter(this, list);
-        //mRecyclerView.setAdapter(mAdapter);
-        //mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-    }
-
-    public void getMovies(TheMovieDBAPI theMovieDBAPI, String sortKey) {
-
-        List<Movie> movieLists = new ArrayList<>();
-
         //Call to the movie database api
         Call<MovieList> call = theMovieDBAPI.getMovieList(sortKey, "4adcbbe309891a2823d0011a2eb8015b");
         call.enqueue(new Callback<MovieList>() {
@@ -103,21 +94,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     Toast.makeText(MainActivity.this, response.code(), Toast.LENGTH_SHORT).show();
                 }
 
-                MovieList data = response.body();
-                LinkedList<String> poster = new LinkedList<>();
-
-                //Puts all the posters strings in the poster list
-                for (Movie temp : data.getMovies()) {
-                    poster.add(getString(R.string.Poster_Path) + temp.getPosterPath());
-                }
-
-                //Sends the poster list to the recycler view
-                mAdapter = new PosterItemAdapter(MainActivity.this, poster);
-                mRecyclerView.setAdapter(mAdapter);
-                GridLayoutManager gridLayoutManager = new GridLayoutManager(MainActivity.this, 2);
-                mRecyclerView.setLayoutManager(gridLayoutManager);
-
-                mAdapter.setData(data);
+                mAdapter.setData(response.body());
 
                 Toast.makeText(MainActivity.this, "Success", Toast.LENGTH_SHORT).show();
             }
@@ -135,13 +112,13 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         String sortingKey;
 
         switch (spinnerLabel) {
-            case "Popular" :
+            case "Popular":
                 sortingKey = "popular";
-                //getMovies();
-            case "Top Rated" :
+                getMovies(sortingKey);
+            case "Top Rated":
                 sortingKey = "top_rated";
-                //getMovies();
-            case "Favorite" :
+                getMovies(sortingKey);
+            case "Favorite":
                 //Show list of favorite movies
         }
     }
@@ -149,17 +126,5 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     @Override
     public void onNothingSelected(AdapterView<?> adapterView) {
         //Do nothing
-    }
-
-    public void showDetails(View view) {
-        Intent intent = new Intent(this, SecondActivity.class);
-        intent.putExtra(POSTER_MESSAGE, POSTER_MESSAGE);
-        intent.putExtra(TITLE_MESSAGE, TITLE_MESSAGE);
-        intent.putExtra(RELEASE_DATE_MESSAGE, RELEASE_DATE_MESSAGE);
-        intent.putExtra(RATING_MESSAGE, RATING_MESSAGE);
-        intent.putExtra(DESCRIPTION_MESSAGE, DESCRIPTION_MESSAGE);
-        startActivity(intent);
-
-        Toast.makeText(this, "Clicked!", Toast.LENGTH_SHORT).show();
     }
 }

@@ -22,7 +22,7 @@ public class Movie implements Serializable {
     private String title;
 
     @SerializedName("vote_average")
-    private double voteAverage;
+    private String voteAverage;
 
     public String getId() {
         return id;
@@ -44,7 +44,7 @@ public class Movie implements Serializable {
         return title;
     }
 
-    public double getVoteAverage() {
+    public String getVoteAverage() {
         return voteAverage;
     }
 }

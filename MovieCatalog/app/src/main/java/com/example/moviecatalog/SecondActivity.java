@@ -25,20 +25,14 @@ public class SecondActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
 
-        String message = intent.getStringExtra(MainActivity.POSTER_MESSAGE);
-        Picasso.get().load(message).into(poster);
+        Movie movie = (Movie) intent.getSerializableExtra("movie");
 
-        message = intent.getStringExtra(MainActivity.TITLE_MESSAGE);
-        title.setText(message);
-
-        message = intent.getStringExtra(MainActivity.RELEASE_DATE_MESSAGE);
-        date.setText(message);
-
-        message = intent.getStringExtra(MainActivity.RATING_MESSAGE);
-        rating.setText(message);
-
-        message = intent.getStringExtra(MainActivity.DESCRIPTION_MESSAGE);
-        description.setText(message);
+        String BASE_URL = "https://image.tmdb.org/t/p/w500";
+        Picasso.get().load(BASE_URL + movie.getPosterPath()).into(poster);
+        title.setText(movie.getTitle());
+        date.setText(movie.getReleaseDate());
+        rating.setText(movie.getVoteAverage());
+        description.setText(movie.getOverview());
     }
 
     public void addFavorite(View view) {

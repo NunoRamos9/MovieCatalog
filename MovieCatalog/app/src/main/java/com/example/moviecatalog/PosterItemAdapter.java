@@ -12,17 +12,14 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.squareup.picasso.Picasso;
 
-import java.util.LinkedList;
-
 public class PosterItemAdapter extends RecyclerView.Adapter<PosterItemAdapter.PosterViewHolder> {
 
-    private final LinkedList<String> mPosterList;
-    private LayoutInflater mInflater;
-    MovieList data;
+    private final LayoutInflater mInflater;
+    private MovieList data;
+    private OnClickItemListener listener;
 
-    public PosterItemAdapter(Context context,LinkedList<String> posterList) {
+    public PosterItemAdapter(Context context) {
         mInflater = LayoutInflater.from(context);
-        this.mPosterList = posterList;
     }
 
     @NonNull
@@ -35,33 +32,57 @@ public class PosterItemAdapter extends RecyclerView.Adapter<PosterItemAdapter.Po
 
     @Override
     public void onBindViewHolder(@NonNull PosterItemAdapter.PosterViewHolder holder, int position) {
-        String mCurrent = mPosterList.get(position);
+        String BASE_URL = "https://image.tmdb.org/t/p/w342";
+        String mCurrent = BASE_URL + data.getMovies().get(position).getPosterPath();
         Picasso.get().load(mCurrent).into(holder.posterItemView);
+        holder.titleItemView.setText(data.getMovies().get(position).getTitle());
+        holder.posterItemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                int pos = holder.getAdapterPosition();
+                if (listener != null) {
+                    listener.onClickItem(data.getMovies().get(pos), pos);
+                }
+            }
+        });
 
     }
 
     @Override
     public int getItemCount() {
-        return mPosterList.size();
+        if (data == null || data.getMovies() == null) {
+            return 0;
+        }
+        return data.getMovies().size();
     }
 
-    public void setData (MovieList data) {
-        this.data = data;
-        //notifyDataSetChanged();
-    }
-
-    public MovieList getData () {
+    public MovieList getData() {
         return this.data;
+    }
+
+    public void setData(MovieList data) {
+        this.data = data;
+        notifyDataSetChanged();
+    }
+
+    public void setOnClickListener(OnClickItemListener listener) {
+        this.listener = listener;
+    }
+
+    interface OnClickItemListener {
+        void onClickItem(Movie movie, int position);
     }
 
     class PosterViewHolder extends RecyclerView.ViewHolder {
 
         public final ImageView posterItemView;
+        public final TextView titleItemView;
         final PosterItemAdapter mAdapter;
 
         public PosterViewHolder(@NonNull View itemView, PosterItemAdapter adapter) {
             super(itemView);
             posterItemView = itemView.findViewById(R.id.imageItem);
+            titleItemView = itemView.findViewById(R.id.titleView);
             mAdapter = adapter;
         }
     }

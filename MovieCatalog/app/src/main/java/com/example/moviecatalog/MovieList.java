@@ -10,7 +10,6 @@ public class MovieList implements Serializable {
     @SerializedName("results")
     private List<Movie> movies;
 
-    public int page;
 
     public List<Movie> getMovies() {
         return movies;
