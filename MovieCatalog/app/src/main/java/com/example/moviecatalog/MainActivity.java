@@ -1,7 +1,11 @@
 package com.example.moviecatalog;
 
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -9,16 +13,15 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import okhttp3.OkHttpClient;
-import okhttp3.logging.HttpLoggingInterceptor;
+import com.google.android.material.snackbar.Snackbar;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
@@ -66,23 +69,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     public void getMovies(String sortKey) {
 
-        //Instantiation of the HttpClient
-        OkHttpClient.Builder okHttpClientBuilder = new OkHttpClient.Builder();
-
-        okHttpClientBuilder.addInterceptor(
-                new HttpLoggingInterceptor().setLevel(
-                        HttpLoggingInterceptor.Level.BODY
-                )
-        );
-
-        //Instantiation of the Retrofit
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://api.themoviedb.org/3/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .client(okHttpClientBuilder.build())
-                .build();
-
-        TheMovieDBAPI theMovieDBAPI = retrofit.create(TheMovieDBAPI.class);
+        Singleton singleton = Singleton.getInstance();
+        TheMovieDBAPI theMovieDBAPI = singleton.getTheMovieDBAPI();
 
         //Call to the movie database api
         Call<MovieList> call = theMovieDBAPI.getMovieList(sortKey, "4adcbbe309891a2823d0011a2eb8015b");
@@ -111,13 +99,15 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         String spinnerLabel = adapterView.getItemAtPosition(i).toString();
         String sortingKey;
 
+        Log.d(LOG_TAG, spinnerLabel);
+
         switch (spinnerLabel) {
             case "Popular":
                 sortingKey = "popular";
-                getMovies(sortingKey);
+                launchMovieCatalog(sortingKey);
             case "Top Rated":
                 sortingKey = "top_rated";
-                getMovies(sortingKey);
+                launchMovieCatalog(sortingKey);
             case "Favorite":
                 //Show list of favorite movies
         }
@@ -126,5 +116,36 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     @Override
     public void onNothingSelected(AdapterView<?> adapterView) {
         //Do nothing
+    }
+
+    boolean internet_connection() {
+        //Check if connected to internet, output accordingly
+        ConnectivityManager cm =
+                (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        boolean isConnected = activeNetwork != null &&
+                activeNetwork.isConnectedOrConnecting();
+        return isConnected;
+    }
+
+    public void launchMovieCatalog(String sortKey) {
+        if (internet_connection()){
+            // Execute DownloadJSON AsyncTask
+            getMovies(sortKey);
+        }else{
+            //create a snackbar telling the user there is no internet connection and issuing a chance to reconnect
+            final Snackbar snackbar = Snackbar.make(findViewById(android.R.id.content),
+                    "No internet connection.",
+                    Snackbar.LENGTH_SHORT);
+            snackbar.setActionTextColor(ContextCompat.getColor(getApplicationContext(),
+                    R.color.teal_200));
+            snackbar.setAction(R.string.try_again, new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //recheck internet connection and call DownloadJson if there is internet
+                }
+            }).show();
+        }
     }
 }
